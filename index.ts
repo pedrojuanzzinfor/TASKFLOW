@@ -24,21 +24,23 @@ app.listen(3000, () => {
     console.log('está rodando em http://localhost:3000')
 })
 app.get('/renderTarefas', async (req, res) => {
-const tarefas: Tarefa[] = await db`SELECT * FROM tarefas`
-
-    res.render("renderTarefas", { tarefas })
+    const tarefas: Tarefa[] = await db`SELECT categorias.nome AS nome_categoria, categorias.id AS id_categoria, usuarios.id AS id_usuario,* FROM categorias INNER JOIN tarefas ON categorias.id = tarefas.categoria_id INNER JOIN usuarios ON tarefas.usuario_id = usuarios.id
+`
+    const usuarios = await db`SELECT * FROM usuarios`
+    const categorias = await db`SELECT * FROM categorias`
+    res.render("renderTarefas", { tarefas, usuarios, categorias })
 })
 app.get('/editarTarefas', async (req, res) => {
-const tarefas: Tarefa[] = await db`SELECT * FROM tarefas WHERE status='pendente'`
+    const tarefas: Tarefa[] = await db`SELECT * FROM tarefas WHERE status='pendente'`
 
     res.render("editarTarefas", { tarefas })
 })
 app.post('/updateTarefas', async (req, res) => {
-    await db`UPDATE tarefas SET status='concluída' WHERE id=${req.body.linha}`
+    await db`UPDATE tarefas SET status='concluido' WHERE id=${req.body.linha}`
     res.render("index")
 })
 app.get('/excluirTarefas', async (req, res) => {
-const tarefas: Tarefa[] = await db`SELECT * FROM tarefas`
+    const tarefas: Tarefa[] = await db`SELECT * FROM tarefas`
 
     res.render("excluirTarefas", { tarefas })
 
@@ -49,9 +51,41 @@ app.post('/deleteTarefa', async (req, res) => {
 
 })
 app.get("/adicionarTarefas", async (req, res) => {
-    res.render('adicionarTarefas')
+    const usuarios = await db`SELECT * FROM usuarios`
+    const categorias = await db`SELECT * FROM categorias`
+    res.render('adicionarTarefas', { usuarios, categorias })
 })
 app.post("/insertTarefa", async (req, res) => {
-    await db`INSERT INTO tarefas(titulo, descricao, status) VALUES(${req.body.titulo},${req.body.descricao},   'pendente')`
+    await db`INSERT INTO tarefas(titulo, descricao, usuario_id, categoria_id, status) VALUES(${req.body.titulo},${req.body.descricao}, ${req.body.usuario},${req.body.categoria},   'pendente')`
     res.render("index")
+})
+app.get("/filterTarefas", async (req, res) => {
+    const usuarios = await db`SELECT * FROM usuarios`
+    const categorias = await db`SELECT * FROM categorias`
+    const queryBase = `SELECT categorias.nome AS nome_categoria, categorias.id AS id_categoria, usuarios.id AS id_usuario,* FROM categorias INNER JOIN tarefas ON categorias.id = tarefas.categoria_id INNER JOIN usuarios ON tarefas.usuario_id = usuarios.id `
+    
+    
+    
+    const filtros: string[] = []
+    let queryCompleta = ""
+    if (req.query.usuario?.length) {
+        filtros.push(` usuario_id='${req.query.usuario}'`)
+    } if (req.query.status?.length) {
+        filtros.push(` status='${req.query.status}'`)
+    }
+    if (req.query.categoria?.length) {
+        filtros.push(` categoria_id='${req.query.categoria}'`)
+    }
+    // filtros nao tem nada dentro -> so a query queryBase
+    // filtros tem 1 so de comprimento -> querybase + 'WHERE' + filtros[0]
+    if(filtros.length==1){
+        queryCompleta = queryBase + 'WHERE' + filtros[0]
+    }
+    else if(filtros.length>1){
+        queryCompleta=queryBase + 'WHERE' + filtros.join('AND')
+    }
+    console.log(queryCompleta)
+    const tarefasFiltradas = await db.unsafe(queryCompleta)
+    // filtros tem mais de 1 de comprimento querybase + 'WHERE' + filtros.join('AND')
+    res.render("renderTarefas", { tarefas: tarefasFiltradas, usuarios, categorias })
 })
