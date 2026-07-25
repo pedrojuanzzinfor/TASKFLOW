@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <h1>excluir alguma tarefa</h1>
+    <form method="post" action="deleteTarefa">
+        <h2>id animail</h2>
+        <% if(Array.isArray(tarefas)){ tarefas.map((i)=>{%>
+            <input type="radio" name="linha" value="<%=i.id%>">
+            <%=i.id%>
+                ,<%})}%>
+                    <button type="submit">excluir</button>
+    </form>
+</body>
+</html>
