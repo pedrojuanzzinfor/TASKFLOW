@@ -6,13 +6,14 @@
     <title>Document</title>
 </head>
 <body>
-        <h1>excluir alguma tarefa</h1>
-    <form method="post" action="deleteTarefa">
-        <h2>id animail</h2>
-        <% if(Array.isArray(tarefas)){ tarefas.map((i)=>{%>
+        <h1>excluir</h1>
+    <form method="post" action="delete">
+        <h2>id </h2>
+        <% if(Array.isArray(tabela)){ tabela.map((i)=>{%>
             <input type="radio" name="linha" value="<%=i.id%>">
             <%=i.id%>
-                ,<%})}%>
+            ,<%})}%>
+            <input type="hidden" name="tabela" value="<%=nomeTabela%>">
                     <button type="submit">excluir</button>
     </form>
 </body>

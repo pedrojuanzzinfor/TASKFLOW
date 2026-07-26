@@ -48,33 +48,55 @@ app.get('/editar', async (req, res) => {
     if (nomeTabela == "tarefas") {
         query += "WHERE status = pendente"
     }
-     const tabela = await db.unsafe(query)
+    const tabela = await db.unsafe(query)
     console.log(tabela)
-    res.render("editarTarefas", { tabela,nomeTabela })
+    res.render("editarTarefas", { tabela, nomeTabela })
 })
 app.post('/update', async (req, res) => {
-     const  query = `UPDATE ${req.body.tabela} SET ` 
-     let complemento=`nome = '${req.body.nome}' `
-     const complementoFinal=`WHERE id=${req.body.id}`
-    if (req.body.tabela=="tarefas"){
+    const query = `UPDATE ${req.body.tabela} SET `
+    let complemento = `nome = '${req.body.nome}' `
+    const complementoFinal = `WHERE id=${req.body.id}`
+    if (req.body.tabela == "tarefas") {
         complemento = `status = 'concluido' `
     }
-    const queryCompleta=query+complemento+complementoFinal
+    const queryCompleta = query + complemento + complementoFinal
     console.log(queryCompleta)
     await db.unsafe(queryCompleta)
     res.render("index")
 })
-app.get('/excluirTarefas', async (req, res) => {
-    const tarefas: Tarefa[] = await db`SELECT * FROM tarefas`
+app.get('/excluir', async (req, res) => {
+    const query = `SELECT * FROM ${req.query.tabela}`
 
-    res.render("excluirTarefas", { tarefas })
+    const tabela = await db.unsafe(query)
+
+
+
+    res.render("excluirTarefas", { tabela, nomeTabela: req.query.tabela })
 
 })
-app.post('/deleteTarefa', async (req, res) => {
-    await db`DELETE FROM tarefas WHERE id=${req.body.linha}`
-    res.render("index")
+app.post('/delete', async (req, res) => {
+    let mensagem = ''
+    try {
+        const query = `DELETE FROM ${req.body.tabela} WHERE id=${req.body.linha}`
+        await db.unsafe(query)
+        res.render("index")
+    }
+    catch (error) {
+        if (error == `PostgresError: atualização ou exclusão em tabela "usuarios" viola restrição de chave estrangeira "fk_tarefas_usuarios" em "tarefas"
+    at wrapPostgresError (internal:sql/postgres:171:27)
+    at onRejectPostgresQuery (internal:sql/postgres:199:33)`) {
+            mensagem = "impossivel apagar usuario:primero apague as tarefas vinculadas a ele"
+        }
+        if (error == `PostgresError: atualização ou exclusão em tabela "categorias" viola restrição de chave estrangeira "fk_tarefas_categorias" em "tarefas"`) {
+            mensagem = "impossivel apagar categoria:primero apague as tarefas vinculadas a ela"
+        }
 
-})
+        res.render("index", {mensagem })
+        }
+    }
+
+
+)
 app.get("/adicionarTarefas", async (req, res) => {
     const usuarios = await db`SELECT * FROM usuarios`
     const categorias = await db`SELECT * FROM categorias`

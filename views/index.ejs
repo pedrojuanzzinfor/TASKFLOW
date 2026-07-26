@@ -6,13 +6,16 @@
     <title>TASKFLOW</title>
 </head>
 <body>
+    <%=mensagem%>
     <button onclick="window.location.href='renderTabelas?render=tarefas'">Consultar tarefas</button>
     <button onclick="window.location.href='renderTabelas?render=funcionarios'">Consultar funcionarios</button>
     <button onclick="window.location.href='renderTabelas?render=categorias'">Consultar categorias </button>
     <button onclick="window.location.href='editar?tabela=tarefas'">Concluir tarefas</button>
     <button onclick="window.location.href='editar?tabela=usuarios'">editar usuarios</button>
     <button onclick="window.location.href='editar?tabela=categorias'">editar categorias</button>
-    <button onclick="window.location.href='excluirTarefas'">Excluir tarefas</button>
+    <button onclick="window.location.href='excluir?tabela=tarefas'">Excluir tarefas</button>
+    <button onclick="window.location.href='excluir?tabela=usuarios'">Excluir funcionarios</button>
+    <button onclick="window.location.href='excluir?tabela=categorias'">Excluir categorias</button>
     <button onclick="window.location.href='adicionarTarefas'">Adicionar tarefas</button>
     <button onclick="window.location.href='insert?tabela=usuarios'">Adicionar funcionário</button>
     <button onclick="window.location.href='insert?tabela=categorias'">Adicionar categoria</button>
