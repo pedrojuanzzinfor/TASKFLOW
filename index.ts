@@ -1,25 +1,11 @@
 import express from 'express';
 import { db } from './db';
-
-type Tarefa = {
-    id: number,
-    titulo: string,
-    descricao: string,
-    status: string,
-    criado_em: string
-}
-
-
-
-
-
-
-const app = express()
+import "./routes/tarefas"
+import { criarRotasTarefas } from './routes/tarefas';
+export const app = express()
+criarRotasTarefas(app)
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
-app.get('/', (req, res) => {
-    res.render("index")
-})
 app.listen(3000, () => {
     console.log('está rodando em http://localhost:3000')
 })
@@ -42,11 +28,12 @@ app.get('/renderTabelas', async (req, res) => {
     res.render("renderTarefas", { tabela, usuarios, categorias, tarefas })
 })
 app.get('/editar', async (req, res) => {
+
     const nomeTabela = req.query.tabela
     let query = `SELECT * FROM ${nomeTabela} `
 
     if (nomeTabela == "tarefas") {
-        query += "WHERE status = pendente"
+        query += "WHERE status = 'pendente'"
     }
     const tabela = await db.unsafe(query)
     console.log(tabela)
@@ -62,7 +49,7 @@ app.post('/update', async (req, res) => {
     const queryCompleta = query + complemento + complementoFinal
     console.log(queryCompleta)
     await db.unsafe(queryCompleta)
-    res.render("index")
+    res.redirect("index")
 })
 app.get('/excluir', async (req, res) => {
     const query = `SELECT * FROM ${req.query.tabela}`
@@ -79,7 +66,7 @@ app.post('/delete', async (req, res) => {
     try {
         const query = `DELETE FROM ${req.body.tabela} WHERE id=${req.body.linha}`
         await db.unsafe(query)
-        res.render("index")
+        res.redirect("index")
     }
     catch (error) {
         if (error == `PostgresError: atualização ou exclusão em tabela "usuarios" viola restrição de chave estrangeira "fk_tarefas_usuarios" em "tarefas"
@@ -91,9 +78,9 @@ app.post('/delete', async (req, res) => {
             mensagem = "impossivel apagar categoria:primero apague as tarefas vinculadas a ela"
         }
 
-        res.render("index", {mensagem })
-        }
+        res.render("telaERRO", { mensagem })
     }
+}
 
 
 )
@@ -104,7 +91,7 @@ app.get("/adicionarTarefas", async (req, res) => {
 })
 app.post("/insertTarefa", async (req, res) => {
     await db`INSERT INTO tarefas(titulo, descricao, usuario_id, categoria_id, status) VALUES(${req.body.titulo},${req.body.descricao}, ${req.body.usuario},${req.body.categoria},   'pendente')`
-    res.render("index")
+    res.redirect("index")
 })
 app.get("/filterTarefas", async (req, res) => {
     const usuarios = await db`SELECT * FROM usuarios`
@@ -134,7 +121,7 @@ app.get("/filterTarefas", async (req, res) => {
     console.log(queryCompleta)
     const tarefasFiltradas = await db.unsafe(queryCompleta)
     // filtros tem mais de 1 de comprimento querybase + 'WHERE' + filtros.join('AND')
-    res.render("renderTarefas", { tarefas: tarefasFiltradas, usuarios, categorias })
+    res.render("renderTarefas", { tabela: tarefasFiltradas, usuarios, categorias, tarefas: true })
 })
 app.get("/insert", async (req, res) => {
     res.render("adicionar", { tabela: req.query.tabela })
@@ -142,5 +129,8 @@ app.get("/insert", async (req, res) => {
 app.post("/insert", async (req, res) => {
     const query = `INSERT INTO ${req.body.tabela}(nome) VALUES('${req.body.nome}')`
     await db.unsafe(query)
-    res.redirect('/')
+    res.redirect('index')
+})
+app.get("/index", (req, res) => {
+    res.render("index")
 })

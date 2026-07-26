@@ -6,7 +6,9 @@
     <title>TASKFLOW</title>
 </head>
 <body>
+    <%if(typeof mensagem != 'undefined'){%>
     <%=mensagem%>
+    <%}%>
     <button onclick="window.location.href='renderTabelas?render=tarefas'">Consultar tarefas</button>
     <button onclick="window.location.href='renderTabelas?render=funcionarios'">Consultar funcionarios</button>
     <button onclick="window.location.href='renderTabelas?render=categorias'">Consultar categorias </button>
