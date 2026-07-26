@@ -23,12 +23,23 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
     console.log('está rodando em http://localhost:3000')
 })
-app.get('/renderTarefas', async (req, res) => {
-    const tarefas: Tarefa[] = await db`SELECT categorias.nome AS nome_categoria, categorias.id AS id_categoria, usuarios.id AS id_usuario,* FROM categorias INNER JOIN tarefas ON categorias.id = tarefas.categoria_id INNER JOIN usuarios ON tarefas.usuario_id = usuarios.id
-`
+app.get('/renderTabelas', async (req, res) => {
+    let query= ''
+    let tarefas=false
+    if(req.query.render=="tarefas"){
+        query = `SELECT categorias.nome AS nome_categoria, categorias.id AS id_categoria, usuarios.id AS id_usuario,* FROM categorias INNER JOIN tarefas ON categorias.id = tarefas.categoria_id INNER JOIN usuarios ON tarefas.usuario_id = usuarios.id`
+        tarefas = true
+    }
+    else if(req.query.render=="funcionarios"){
+        query =`SELECT * FROM usuarios`
+    }
+    else{
+        query = `SELECT * FROM categorias`
+    }
+    const tabela = await db.unsafe(query)
     const usuarios = await db`SELECT * FROM usuarios`
     const categorias = await db`SELECT * FROM categorias`
-    res.render("renderTarefas", { tarefas, usuarios, categorias })
+    res.render("renderTarefas", { tabela, usuarios, categorias, tarefas })
 })
 app.get('/editarTarefas', async (req, res) => {
     const tarefas: Tarefa[] = await db`SELECT * FROM tarefas WHERE status='pendente'`
@@ -88,4 +99,12 @@ app.get("/filterTarefas", async (req, res) => {
     const tarefasFiltradas = await db.unsafe(queryCompleta)
     // filtros tem mais de 1 de comprimento querybase + 'WHERE' + filtros.join('AND')
     res.render("renderTarefas", { tarefas: tarefasFiltradas, usuarios, categorias })
+})
+app.get("/insert", async (req,res)=>{
+    res.render("adicionar", {tabela:req.query.tabela})
+})
+app.post("/insert", async (req, res)=>{
+    const query = `INSERT INTO ${req.body.tabela}(nome) VALUES('${req.body.nome}')`
+    await db.unsafe(query)
+    res.redirect('/')
 })
