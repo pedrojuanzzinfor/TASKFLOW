@@ -10,35 +10,7 @@
 <body>
     <% if(tarefas){%>
     <H1>FILTRO</H1>
-    <form method="get" action="filterTarefas">
-        <select name="status">
-            <option value=""></option>
-            <option value="concluido">concluido</option>
-            <option value="pendente">pendente</option>
-            </option>
-        </select>
 
-        <select name="usuario">
-            <option value=""></option>
-            <%usuarios.map((i)=>{
-                %>
-                <option value="<%=i.id%>">
-                    <%=i.nome%>
-                </option>
-                <% })%>
-        </select>
-        <select name="categoria">
-            <option value=""></option>
-            <%categorias.map((i)=>{
-                %>
-                <option value="<%=i.id%>">
-                    <%=i.nome%>
-                </option>
-                <% })%>
-        </select>
-        <button type="submit">ok</button>
-        </form>
-        <%}%>
     <% tabela.map((i)=>{
         if (tarefas){
         %>
