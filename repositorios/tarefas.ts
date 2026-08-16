@@ -1,4 +1,5 @@
 import { db } from "../db";
+import type { TarefaFiltros } from "../tipos/filtro";
 import type { TarefaTipo } from "../tipos/tarefas";
 
 
@@ -21,7 +22,7 @@ export class TarefaRepositorio {
 	async excluirTarefaPeloId(id: number): Promise<void> {
 		await db`DELETE FROM tarefas WHERE id = ${id}`;
 	}
-	async adicionarTarefa(tarefa:Omit<TarefaTipo,"id">): Promise<void> {
+	async adicionarTarefa(tarefa: Omit<TarefaTipo, "id">): Promise<void> {
 		await db`INSERT INTO tarefas(titulo,descricao,status,usuario_id,categoria_id) VALUES(${tarefa.titulo},${tarefa.descricao},${tarefa.status},${tarefa.usuario_id},${tarefa.categoria_id})`;
 	}
 	async filtrarTarefas(filtros: TarefaFiltros): Promise<TarefaTipo[]> {
@@ -29,16 +30,24 @@ export class TarefaRepositorio {
 
 		const arrayFiltros: string[] = [];
 		let queryCompleta = "";
+
+		console.log({
+			filtros,
+		})
+
 		if (filtros.usuario_id) {
 			arrayFiltros.push(` usuario_id='${filtros.usuario_id}'`);
 		}
 		if (filtros.categoria_id) {
-			arrayFiltros.push(` status='${filtros.categoria_id}'`);
+			arrayFiltros.push(` status='${filtros.status}'`);
 		}
 		if (filtros.status) {
-			arrayFiltros.push(` categoria_id='${filtros.status}'`);
+			arrayFiltros.push(` status='${filtros.status}'`);
 		}
-		if (arrayFiltros.length == 1) {
+
+		console.log(arrayFiltros)
+
+		if (arrayFiltros.length === 1) {
 			queryCompleta = queryBase + "WHERE" + arrayFiltros[0];
 		} else if (arrayFiltros.length > 1) {
 			queryCompleta = queryBase + "WHERE" + arrayFiltros.join("AND");

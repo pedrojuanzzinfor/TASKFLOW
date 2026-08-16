@@ -7,19 +7,19 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>editar tarefa</h1>
+    <h1>inserir tarefa</h1>
     <form method="post" action="/tarefas/inserir">
         <input type='text' name='titulo' >
         <input type='text' name='descricao'>
         <input type='hidden' name='status' value="pendente">
-        <select name="usuario">
+        <select name="usuario_id">
         <% usuarios.map((i)=>{%>
-            <option value="<%=usuario.id%>"><%=usuario.nome%></option>
+            <option value="<%=i.id%>"><%=i.nome%></option>
         <%})%>
         </select>
-        <select>
+        <select name="categoria_id">
         <% categorias.map((i)=>{%>
-            <option value="<%=categoria.id%>"><%=categoria.nome%></option>
+            <option value="<%=i.id%>"><%=i.nome%></option>
         <%})%>
         </select>
         <button type="submit">ok</button>

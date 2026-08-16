@@ -1,5 +1,5 @@
 export type TarefaFiltros = {
-    usuario_id?: number;
-    categoria_id?: number;
-    status?: "pendente" | "concluido" | undefined;
+    usuario_id: number | null;
+    categoria_id: number | null;
+    status?: "pendente" | "concluido" | null;
 };

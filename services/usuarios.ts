@@ -1,5 +1,5 @@
 import type { UsuarioRepositorio } from "../repositorios/usuarios";
-import type { TipoUsuario } from "../tipos/usuario";
+import type { TipoUsuarioCategoria } from "../tipos/usuarioCategoria";
 
 export class UsuarioService {
     repositorio: UsuarioRepositorio
@@ -15,7 +15,7 @@ export class UsuarioService {
         }
         return this.repositorio.pegarPeloId(id)
     }
-    async updateUsuarios(usuario: TipoUsuario) {
+    async updateUsuarios(usuario: TipoUsuarioCategoria) {
         await this.repositorio.updateUsuarios(usuario)
 
     }
@@ -25,7 +25,7 @@ export class UsuarioService {
         }
         await this.repositorio.excluirUsuario(id)
     }
-    async insertUsuarios(usuario:Omit<TipoUsuario,"id">){
+    async insertUsuarios(usuario: Omit<TipoUsuarioCategoria, "id">) {
         await this.repositorio.adicionarUsuario(usuario)
     }
 

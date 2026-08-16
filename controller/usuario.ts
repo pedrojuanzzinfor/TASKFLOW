@@ -1,19 +1,18 @@
 import type { Request, Response } from "express";
 import { UsuarioRepositorio } from "../repositorios/usuarios";
 import { UsuarioService } from "../services/usuarios";
-import type { TipoUsuario } from "../tipos/usuario";
+import type { TipoUsuarioCategoria } from "../tipos/usuarioCategoria";
 
 const repositorio = new UsuarioRepositorio()
 const service = new UsuarioService(repositorio)
 export class UsuarioController {
     async buscarTodos(_req: Request, res: Response) {
         const usuarios = await service.buscarTodos()
-        console.log(usuarios)
         res.render("usuarios/render", { usuarios })
     }
     async pegarPeloId(_req: Request, res: Response) {
         try {
-            const usuarios: TipoUsuario[] = await service.pegarPeloId(Number(_req.params.id))
+            const usuarios: TipoUsuarioCategoria[] = await service.pegarPeloId(Number(_req.params.id))
             res.render("usuarios/render", { usuarios })
         }
         catch (erro: any) {
@@ -32,7 +31,7 @@ export class UsuarioController {
     }
     async updateUsuario(_req: Request, res: Response) {
         try {
-            const usuario: TipoUsuario = {
+            const usuario: TipoUsuarioCategoria = {
                 id: _req.body.id,
                 nome: _req.body.nome
             }
@@ -53,23 +52,23 @@ export class UsuarioController {
             res.render("usuarios/render", { usuarios })
 
         }
-        catch (erro:any) {
+        catch (erro: any) {
             res.render("erros", { erro: erro.message })
 
         }
     }
-    async renderFormAdicionar(_req: Request, res: Response){
+    async renderFormAdicionar(_req: Request, res: Response) {
         res.render("usuarios/formAdicionar");
     }
     async insertUsuario(_req: Request, res: Response) {
         try {
-            const usuario: Omit<TipoUsuario, 'id'> = {
+            const usuario: Omit<TipoUsuarioCategoria, 'id'> = {
                 nome: _req.body.nome
             }
             await service.insertUsuarios(usuario)
             const usuarios = await service.buscarTodos()
-            res.render("usuarios/render", {usuarios})
-        } catch (erro:any) {
+            res.render("usuarios/render", { usuarios })
+        } catch (erro: any) {
             res.render("erros", { erro: erro.message })
 
         }

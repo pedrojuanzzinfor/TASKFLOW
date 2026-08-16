@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <form method="get" action="filtrar">
+    <form method="get" action="/tarefas/filtrar">
         <select name="status">
             <option value=""></option>
             <option value="concluido">concluido</option>
@@ -39,9 +39,9 @@
         <% tarefas.map((i)=>{
             %>
             <p>
-                <%=i.titulo%>-<%=i.descricao%>-<%=i.status%>-criado em:<%=i.criado_em%> Responsável:<%=i.nome%>
+                <%=i.titulo%>-<%=i.descricao%>-<%=i.status%>-criado em:<%=i.criado_em%> Responsável:<%=i.usuario_id%>
                                     Categoria:
-                                    <%=i.nome_categoria%>
+                                    <%=i.categoria_id%>
             </p>
 
 
