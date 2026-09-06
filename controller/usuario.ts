@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
 import { UsuarioRepositorio } from "../repositorios/usuarios";
 import { UsuarioService } from "../services/usuarios";
-import type { TipoUsuarioCategoria } from "../tipos/usuarioCategoria";
+import type { UsuarioTipo } from "../tipos/usuario";
+
 
 const repositorio = new UsuarioRepositorio()
 const service = new UsuarioService(repositorio)
@@ -62,16 +63,19 @@ export class UsuarioController {
     }
     async insertUsuario(_req: Request, res: Response) {
         try {
-            const usuario: Omit<TipoUsuarioCategoria, 'id'> = {
-                nome: _req.body.nome
+            const usuario: Omit<UsuarioTipo, 'id'> = {
+                login: _req.body.nome,
+                senha: _req.body.senha,
+                adm: _req.body.adm
             }
             await service.insertUsuarios(usuario)
             const usuarios = await service.buscarTodos()
-            res.render("usuarios/render", { usuarios })
+            res.redirect("/")
         } catch (erro: any) {
             res.render("erros", { erro: erro.message })
 
         }
 
     }
+    
 }

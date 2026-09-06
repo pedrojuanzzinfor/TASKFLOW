@@ -5,11 +5,13 @@ import "./routes/tarefas";
 import { criarRotasTarefas } from "./routes/tarefas";
 import { criarRotasUsuarios } from "./routes/usuarios";
 import { criarRotasCategorias } from "./routes/categorias";
+import { criarRotasLogin } from "./routes/login";
 
 export const app = express();
 criarRotasTarefas(app, express);
 criarRotasUsuarios(app, express);
 criarRotasCategorias(app, express);
+criarRotasLogin(app,express);
 app.use(express.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");

@@ -1,5 +1,5 @@
 import type { CategoriaRepositorio } from "../repositorios/categorias";
-import type { TipoUsuarioCategoria } from "../tipos/usuarioCategoria";
+import type { TipoUsuarioCategoria } from "../tipos/categoria";
 
 export class CategoriaService {
     repositorio: CategoriaRepositorio

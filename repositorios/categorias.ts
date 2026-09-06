@@ -1,5 +1,5 @@
 import { db } from "../db";
-import type { TipoUsuarioCategoria } from "../tipos/usuarioCategoria";
+import type { TipoUsuarioCategoria } from "../tipos/categoria";
 
 export class CategoriaRepositorio {
     async buscarTodos(): Promise<TipoUsuarioCategoria[]> {

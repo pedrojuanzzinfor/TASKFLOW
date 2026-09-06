@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { CategoriaRepositorio } from "../repositorios/categorias";
 import { CategoriaService } from "../services/categorias";
-import type { TipoUsuarioCategoria } from "../tipos/usuarioCategoria";
+import type { TipoUsuarioCategoria } from "../tipos/categoria";
 
 const repositorio = new CategoriaRepositorio()
 const service = new CategoriaService(repositorio)

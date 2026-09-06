@@ -4,7 +4,7 @@ import { TarefaRepositorio } from "../repositorios/tarefas";
 import type { TarefaTipo } from "../tipos/tarefas";
 import type { TarefaFiltros } from "../tipos/filtro";
 import { UsuarioRepositorio } from "../repositorios/usuarios";
-import type { TipoUsuarioCategoria } from "../tipos/usuarioCategoria";
+import type { TipoUsuarioCategoria } from "../tipos/categoria";
 import { CategoriaRepositorio } from "../repositorios/categorias";
 import { UsuarioService } from "../services/usuarios";
 import { CategoriaService } from "../services/categorias";
